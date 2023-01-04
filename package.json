@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "aula back-end 1",
   "main": "index.js",
-  "type":"module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js start"
+    "start": "tsc && node ./build/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Francinaldapmfaria/labecommerce-backend/issues"
   },
-  "homepage": "https://github.com/Francinaldapmfaria/labecommerce-backend#readme"
+  "homepage": "https://github.com/Francinaldapmfaria/labecommerce-backend#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }
