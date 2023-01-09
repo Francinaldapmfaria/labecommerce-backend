@@ -49,15 +49,19 @@ export const purchases: TPurchase []=[
 ]
 
 
-export const  createUser = (idUser: string, emailUser: string, passwordUser:string) =>{
+export const  createUser = (id: string, email: string, password:string): string =>{
 
-    let newUser = {
-        id:idUser,
-        email: emailUser,
-        password: passwordUser
+    const newUser: TUser = {
+        id:id,
+        email: email,
+        password: password
     }
     users.push(newUser)
-    return console.log("Cadastro feito com sucesso")
+    return "Cadastro feito com sucesso"
+}
+
+export const getAllUsers = (): TUser[] =>{
+    return users
 }
 
 export const createProduct= (id:string, name: string, price: number, category: string): string =>{
@@ -68,20 +72,50 @@ export const createProduct= (id:string, name: string, price: number, category: s
         category: category
     }
     products.push(newProduct)
-    return("Produto criado com sucesso")
+    return "Produto criado com sucesso"
 }
 
 
-export const getAllProducts = (): TProduct[ ]=> {
+export const getAllProducts = (): TProduct[]=> {
     return products
 }
 
 export const getProductById = (idToSearch: string) : TProduct[] | undefined =>{
     return  products.filter((product)=>{
-        if(product.id === idToSearch){
+        if(product.id.toLowerCase === idToSearch.toLowerCase){
             return product
         }
     })
 }
+
+export const queryProductsByName = (q: string) : TProduct[] | undefined =>{
+    return  products.filter((product)=>{
+        if(product.name.toLowerCase() === q.toLowerCase()){
+            return product
+        }
+    })
+}
+
+//Purchase
+export const createPurchase= (userId: string, productId: string,quantity: number, totalPrice: number): string =>{
+    const newPurchase: TPurchase = {
+        userId: userId,
+        productId: productId,
+        quantity: quantity,
+        totalPrice: totalPrice
+    }
+    purchases.push(newPurchase)
+    return "Produto criado com sucesso"
+}
+
+export const getAllPurchasesFromUserId = (userIdToSearch: string)  =>{
+    return  purchases.filter((purchase)=>{
+            return purchase.userId.toLowerCase().includes(userIdToSearch.toLowerCase())
+        })
+    }
+
+
+
+
 
 

@@ -1,10 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("./database");
-console.log("Usuários cadastrados");
-console.table(database_1.users);
-console.log("Produtos cadastrados");
-console.table(database_1.products);
-console.log("Compras");
-console.table(database_1.purchases);
+const database_2 = require("./database");
+console.table((0, database_2.createUser)('Fran', 'fran@hjhjhj', '11111'));
+console.log((0, database_1.getAllUsers)());
 //# sourceMappingURL=index.js.map

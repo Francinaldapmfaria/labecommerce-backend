@@ -1,4 +1,4 @@
-import { users,products, purchases, } from "./database";
+import { users,products, purchases, getAllPurchasesFromUserId, queryProductsByName, getAllUsers, } from "./database";
 import { createUser, getAllProducts,getProductById } from "./database";
 
 // console.log("Usuários cadastrados")
@@ -11,5 +11,8 @@ import { createUser, getAllProducts,getProductById } from "./database";
 // console.table(purchases)
 
 console.table(createUser('Fran', 'fran@hjhjhj', '11111'))
+console.log(getAllUsers())
 console.log(getAllProducts())
 console.log(getProductById('03'))
+console.log(getAllPurchasesFromUserId('03'))
+console.log(queryProductsByName)
