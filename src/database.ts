@@ -48,7 +48,7 @@ export const purchases: TPurchase []=[
     }
 ]
 
-
+//CADASTRAR USUARIO
 export const  createUser = (idUser: string, emailUser: string, passwordUser:string) =>{
 
     let newUser = {
