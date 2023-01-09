@@ -1,6 +1,7 @@
 import { TUser } from "./types"
 import { TProduct } from "./types"
 import { TPurchase } from "./types"
+import { CATEGORY } from "./types"
 
 export const users: TUser [] =[
     {
@@ -18,16 +19,16 @@ export const users: TUser [] =[
 export const products:TProduct [] = [
     {
         id:"1212",
-        name:"carrinho",
+        name:"boneca",
         price:50,
-        category:"brinquedo",
+        category:CATEGORY.TOY,
     },
 
     {
         id:"1200",
-        name:"boneca",
+        name:"oculos",
         price:60,
-        category:"brinquedo", 
+        category:CATEGORY.ACESSORIES, 
     }
 ]
 
@@ -46,3 +47,41 @@ export const purchases: TPurchase []=[
         totalPrice:180
     }
 ]
+
+
+export const  createUser = (idUser: string, emailUser: string, passwordUser:string) =>{
+
+    let newUser = {
+        id:idUser,
+        email: emailUser,
+        password: passwordUser
+    }
+    users.push(newUser)
+    return console.log("Cadastro feito com sucesso")
+}
+
+export const createProduct= (id:string, name: string, price: number, category: string): string =>{
+    const newProduct = {
+        id: id,
+        name: name,
+        price: price,
+        category: category
+    }
+    products.push(newProduct)
+    return("Produto criado com sucesso")
+}
+
+
+export const getAllProducts = (): TProduct[ ]=> {
+    return products
+}
+
+export const getProductById = (idToSearch: string) : TProduct[] | undefined =>{
+    return  products.filter((product)=>{
+        if(product.id === idToSearch){
+            return product
+        }
+    })
+}
+
+
