@@ -96,7 +96,7 @@ export const queryProductsByName = (q: string) : TProduct[] | undefined =>{
     })
 }
 
-//Purchase
+//Purchase criando
 export const createPurchase= (userId: string, productId: string,quantity: number, totalPrice: number): string =>{
     const newPurchase: TPurchase = {
         userId: userId,
