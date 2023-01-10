@@ -1,6 +1,8 @@
 import { users,products, purchases, getAllPurchasesFromUserId, queryProductsByName, getAllUsers, } from "./database";
 import { createUser, getAllProducts,getProductById } from "./database";
-
+import cors from 'cors'
+import express, {request, Request, response, Response} from "express";
+import { TProduct, TPurchase, TUser } from "./types";
 
 // console.log("Usuários cadastrados")
 // console.table(users)
@@ -15,14 +17,10 @@ console.table(createUser('Fran', 'fran@hjhjhj', '11111'))
 console.log(getAllUsers())
 console.log(getAllProducts())
 console.log(getProductById('03'))
-<<<<<<< HEAD
 console.log(getAllPurchasesFromUserId('03'))
 console.log(queryProductsByName)
-=======
 
-import cors from 'cors'
-import express, {request, Request, response, Response} from "express";
-import { TProduct, TPurchase, TUser } from "./types";
+
 
 const app = express()
 
@@ -118,4 +116,3 @@ app.get('/ping' ,(req: Request, res: Response)=>{
         purchases.push(newpurchases)
         res.status(201).send(" registrado")
     })
->>>>>>> main
