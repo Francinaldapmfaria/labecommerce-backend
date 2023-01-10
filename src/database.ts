@@ -48,8 +48,13 @@ export const purchases: TPurchase []=[
     }
 ]
 
+<<<<<<< HEAD
 
 export const  createUser = (id: string, email: string, password:string): string =>{
+=======
+//CADASTRAR USUARIO
+export const  createUser = (idUser: string, emailUser: string, passwordUser:string) =>{
+>>>>>>> main
 
     const newUser: TUser = {
         id:id,
