@@ -17,8 +17,10 @@ export type TPurchase = {
     totalPrice: number;
 }
 
+
+//vc pode usar UPPER_CASE OU Pascall_Case
 export enum CATEGORY {
     ACESSORIES= "acessorio",
     TOY=  "brinquedo",
-    SHOES= "roupas"
+    SHOES= "Calçado"
 }
