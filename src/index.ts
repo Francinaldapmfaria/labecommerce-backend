@@ -107,22 +107,33 @@ app.post('/users', (req: Request, res: Response) => {
             throw new Error("'password' deve ser uma string ")
         }
 
-        const newuser = { id, email, password }
+        const newUser = { id, email, password }
 
-        if (id !== newuser.id) {
-            res.status(201).send('Cadastro realizado com sucesso')
-            users.push(newuser)
-        } else {
+        const user = users.find((user) => user.id === id)
+        const userEmail = users.find((user) => user.email === email)
+
+        if(user){
             res.status(400)
-            throw new Error("Usuário ja existente")
+            throw new Error("Id já existe")
         }
+        if (userEmail){
+            res.status(400)
+            throw new Error("Email já existe")
+        }
+        if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
+            throw new Error("Parâmetro 'email' inválido")
+        }else{
+            users.push(newUser)
+            res.status(201).send("Usuário Cadastrado")
+        }    
 
-    } catch (error) {
+     
+    } catch (error: any) {
         console.log(error)
-
         if (response.statusCode == 200) {
             res.status(500)
         }
+        res.send(error.message)
 
     }
 
@@ -144,7 +155,7 @@ app.get('/products', (req: Request, res: Response) => {
     try {
         res.status(200).send(products)
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
 
         if (res.statusCode === 200) {
@@ -198,15 +209,16 @@ app.post('/products', (req: Request, res: Response) => {
 
         const newProduct = { id, name, price, category }
 
-        if (id !== newProduct.id) {
-            res.status(201).send("Produto registrado")
+        const product = products.find((product) => product.id === id)
+
+        if (!product) {
             products.push(newProduct)
+            res.status(201).send('Cadastro realizado com sucesso')
         } else {
             res.status(400)
-            throw new Error("Produto ja existente")
-        }
+            throw new Error("Produto já existe")}
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === (200)) {
             res.status(500)
@@ -230,20 +242,29 @@ app.post('/products', (req: Request, res: Response) => {
 // })
 
 //refatorado para o uso do try/catch EXERCICIO 1.3
+//query params deve possuir pelo menos um caractere
+
 app.get('/products/search', (req: Request, res: Response) => {
     try {
-        const q = req.query.q as string
+        const q = req.query.q
 
         const result = products.filter((product) => {
-            return product.name.toLowerCase().includes(q.toLowerCase())
+            return product.name === q
         })
-        if (q.length <= 0) {
-            res.status(400)
-            throw new Error('o query precisa de um parâmetro')
-        }
-        res.status(200).send(result)
+       
+        if(q !== undefined){
+            if (q.length > 1) {
+                res.status(200).send(result)
 
-    } catch (error) {
+                 }else{   
+                res.status(400)
+                throw new Error( "O 'q' deve termais de 1 caracter")
+            }
+
+        }
+       
+    
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
             res.status(500)
@@ -289,7 +310,7 @@ app.get('/products/:id', (req: Request, res: Response) => {
 
 
     }
-    catch (error) {
+    catch (error: any) {
         console.log(error)
 
         if (res.statusCode === 200) {
@@ -338,19 +359,38 @@ app.post('/purchases', (req: Request, res: Response) => {
             throw new Error("'productId' deve ser uma string")
         }
         if (typeof quantity !== "number") {
-            throw new Error("'quantity' deve ser um namber")
+            res.status(400)
+            throw new Error("'quantity' deve ser um number")
         }
         if (typeof totalPrice !== "number") {
+            res.status(400)
             throw new Error("'totalPrice' deve ser um number")
         }
 
-        const newpurchases = { userId, productId, quantity, totalPrice }
+        const newPurchases = { userId, productId, quantity, totalPrice }
 
-        // if(userId === users.id)
+        const userPurchase = users.find((user) => user.id === userId)
+        const product = products.find((product) => product.id === productId)
 
-        purchases.push(newpurchases)
-        res.status(201).send(" registrado")
-    } catch (error) {
+        if(!userPurchase){
+            res.status(400)
+            throw new Error('Compra impossibilitada, realize um cadastro')
+
+        }if(!product){
+            res.status(400)
+            throw new Error('Produto inexistente, digite um id de produto válido')
+        }
+
+
+        else{
+            purchases.push(newPurchases)
+            res.status(201).send("Compra registrada")
+        }
+
+       
+
+
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
             res.status(500)
@@ -403,7 +443,7 @@ app.get('/users/:id/purchases', (req: Request, res: Response) => {
         })
         res.status(200).send(result)
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
             res.status(500)
@@ -460,7 +500,7 @@ app.delete('/users/:id', (req: Request, res: Response) => {
             res.status(404).send("usuário não encontrado")
         }
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
             res.status(500)
@@ -517,7 +557,7 @@ app.delete('/products/:id', (req: Request, res: Response) => {
         }
 
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
             res.status(500)
