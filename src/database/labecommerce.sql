@@ -105,7 +105,7 @@ WHERE id='1212';
 -- retorna o resultado ordenado pela coluna email em ordem crescente
 
 SELECT * FROM users
-ORDER BY email DESC;
+ORDER BY email ASC;
 
 -- Get All Products versão 1 EXERCICIO 3.2
 -- retorna o resultado ordenado pela coluna price em ordem crescente
