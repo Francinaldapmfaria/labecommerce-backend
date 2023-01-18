@@ -121,5 +121,56 @@ ORDER BY price ASC
 
 SELECT * FROM products
 WHERE price >=50 AND price <= 90
-ORDER BY price ASC
+ORDER BY price ASC;
+
+--relaçoes sql I
+
+--criar a tabela de pedidos (purchases)
+
+--colunas da tabela:
+-- id (TEXT, PK, único e obrigatório)
+-- total_price (REAL, único e obrigatório)
+-- paid (INTEGER e obrigatório)
+-- delivered_at (TEXT e opcional)
+-- buyer_id (TEXT, obrigatório e FK = referencia a coluna id da tabela users)
+
+CREATE TABLE purchases (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    total_price REAL UNIQUE NOT NULL,
+    paid INTEGER NOT NULL,
+    delivered_at TEXT,
+    buyer_id TEXT NOT NULL,
+    FOREIGN KEY(buyer_id) REFERENCES users (id)
+);
+
+PRAGMA table_info('purchases');
+
+--A coluna paid será utilizada para guardar uma lógica booleana. O SQLite recomenda o uso do número 0 para false e 1 para true.
+--Os pedidos começam com paid valendo 0 e quando o pagamento for finalizado, se atualiza para 1.
+
+INSERT INTO purchases (id, total_price, paid, buyer_id)
+VALUES
+('p0001', 600, 0,'a001'),
+('p0002', 300, 0,'a001'),
+('p0003', 200, 0,'a002'),
+('p0004', 100, 0,'a002'),
+('p0005', 250, 0,'a003'),
+('p0006', 400, 0,'a003');
+
+SELECT * FROM purchases;
+
+DROP TABLE purchases;
+
+
+UPDATE purchases --aqui insere data em todos os pedidos, se eu quisesse em algum especifico colocaria o where com id
+SET delivered_at = DATE ('now');
+
+
+SELECT * FROM purchases
+INNER JOIN users
+on purchases.buyer_id = users.id
+WHERE users.id = "a001";
+
+
+
 
