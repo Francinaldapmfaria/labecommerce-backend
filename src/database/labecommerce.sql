@@ -34,6 +34,8 @@ VALUES
 ('1500', 'carrinho', 70, 'toy' ),
 ('1600', 'bone', 90, 'acessories' );
 
+DROP TABLE products;
+
 --QUERY AULA APROFUNDAMENTO SQL
 
 -- Get All Users
@@ -171,6 +173,44 @@ INNER JOIN users
 on purchases.buyer_id = users.id
 WHERE users.id = "a001";
 
+--EXERCÍCIOS RELAÇÕES-SQL ii
+
+--Exercício 1.1 Criação da tabela de relações
+
+CREATE TABLE purchases_products (
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases(id),
+    FOREIGN KEY (product_id) REFERENCES products (id)
+
+);
+
+DROP TABLE purchases_products;
+--exercício 2.1 Popule sua tabela purchases_products simulando 3 compras de clientes.
+
+INSERT INTO purchases_products (  purchase_id,product_id,quantity)
+VALUES
+('p0001','1212',12),
+('p0002','1200',3),
+('p0003','1200',2);
+
+SELECT * FROM purchases_products;
+
+--exercício 2.2 Consulta com junção INNER JOIN
+--Mostre em uma query todas as colunas das tabelas relacionadas (purchases_products, purchases e products).
+
+SELECT
+products.name,
+purchases_products.purchase_id AS idCompra,
+purchases_products.product_id AS idProduto,
+purchases_products.quantity AS quantidade
+
+FROM purchases_products
+INNER JOIN purchases
+ON purchases_products.purchase_id = purchases.id
+INNER JOIN products
+ON purchases_products.product_id = products.id;
 
 
-
+SELECT * FROM products;
