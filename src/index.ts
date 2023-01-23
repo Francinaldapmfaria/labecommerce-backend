@@ -301,12 +301,14 @@ app.get('/products/:id', (req: Request, res: Response) => {
         const result = products.find((product) => {
             return product.id === id
         })
+
  
     if(result) {
         res.status(200).send(result)
     }else {
         res.status(404)
         throw new Error("Produto inexistente")
+       
     }
 }catch (error: any) {
         console.log(error)
@@ -335,14 +337,16 @@ app.get('/products/:id', (req: Request, res: Response) => {
 //     res.status(201).send(" registrado")
 // })
 
+
 //=================================================================================
+
 //EXERCÍCIO 1.6
 // CREATE PURCHASE
 // validar o body
 // extra:
-// id do usuário que fez a compra deve existir no array de usuários cadastrados
-// id do produto que foi comprado deve existir no array de produtos cadastrados
-// a quantidade e o total da compra devem estar com o cálculo correto
+// id do usuário que fez a compra deve existir no array de usuários cadastrados-logica feira
+// id do produto que foi comprado deve existir no array de produtos cadastrados-logica feita
+// a quantidade e o total da compra devem estar com o cálculo correto- FALTA FAZER A LOGICA
 
 app.post('/purchases', (req: Request, res: Response) => {
     try {
