@@ -112,22 +112,22 @@ app.post('/users', (req: Request, res: Response) => {
         const user = users.find((user) => user.id === id)
         const userEmail = users.find((user) => user.email === email)
 
-        if(user){
+        if (user) {
             res.status(400)
             throw new Error("Id já existe")
         }
-        if (userEmail){
+        if (userEmail) {
             res.status(400)
             throw new Error("Email já existe")
         }
         if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)) {
             throw new Error("Parâmetro 'email' inválido")
-        }else{
+        } else {
             users.push(newUser)
             res.status(201).send("Usuário Cadastrado")
-        }    
+        }
 
-     
+
     } catch (error: any) {
         console.log(error)
         if (response.statusCode == 200) {
@@ -216,7 +216,8 @@ app.post('/products', (req: Request, res: Response) => {
             res.status(201).send('Cadastro realizado com sucesso')
         } else {
             res.status(400)
-            throw new Error("Produto já existe")}
+            throw new Error("Produto já existe")
+        }
 
     } catch (error: any) {
         console.log(error)
@@ -251,19 +252,19 @@ app.get('/products/search', (req: Request, res: Response) => {
         const result = products.filter((product) => {
             return product.name === q
         })
-       
-        if(q !== undefined){
+
+        if (q !== undefined) {
             if (q.length > 1) {
                 res.status(200).send(result)
 
-                 }else{   
+            } else {
                 res.status(400)
-                throw new Error( "O 'q' deve termais de 1 caracter")
+                throw new Error("O 'q' deve termais de 1 caracter")
             }
 
         }
-       
-    
+
+
     } catch (error: any) {
         console.log(error)
         if (res.statusCode === 200) {
@@ -290,27 +291,24 @@ app.get('/products/search', (req: Request, res: Response) => {
 
 //EXERCÍCIO 2.1 aula 6
 // Get Products by id
-// validar que o produto existe??? NÃO FIZ
+// validar que o produto existe
 
 app.get('/products/:id', (req: Request, res: Response) => {
     try {
 
-
-        //VERIFICAR SE A VALIDAÇÃO ESTA CERTA???
         const id = req.params.id
 
         const result = products.find((product) => {
             return product.id === id
         })
-        if (id !== result.id) {
-            res.status(400)
-            throw new Error("Produto não existe")
-        }
+ 
+    if(result) {
         res.status(200).send(result)
-
-
+    }else {
+        res.status(404)
+        throw new Error("Produto inexistente")
     }
-    catch (error: any) {
+}catch (error: any) {
         console.log(error)
 
         if (res.statusCode === 200) {
@@ -337,7 +335,7 @@ app.get('/products/:id', (req: Request, res: Response) => {
 //     res.status(201).send(" registrado")
 // })
 
-//=================================================NÃO FIZ A LÓGICA================================
+//=================================================================================
 //EXERCÍCIO 1.6
 // CREATE PURCHASE
 // validar o body
@@ -366,29 +364,28 @@ app.post('/purchases', (req: Request, res: Response) => {
             res.status(400)
             throw new Error("'totalPrice' deve ser um number")
         }
-
         const newPurchases = { userId, productId, quantity, totalPrice }
 
         const userPurchase = users.find((user) => user.id === userId)
         const product = products.find((product) => product.id === productId)
 
-        if(!userPurchase){
+        if (!userPurchase) {
             res.status(400)
             throw new Error('Compra impossibilitada, realize um cadastro')
 
-        }if(!product){
+        } if (!product) {
             res.status(400)
             throw new Error('Produto inexistente, digite um id de produto válido')
         }
 
+        if ((product.price * quantity) !== (totalPrice)) {
+            throw new Error("Valor Incorreto")
+        }
 
-        else{
+        else {
             purchases.push(newPurchases)
             res.status(201).send("Compra registrada")
         }
-
-       
-
 
     } catch (error: any) {
         console.log(error)
@@ -422,7 +419,7 @@ app.post('/purchases', (req: Request, res: Response) => {
 // })
 
 
-//EXERCÍCIO 2.2 =========================NÃO FIZ A LOGICA
+//EXERCÍCIO 2.2 
 
 // Get User Purchases by User id
 // validar que o usuário existe
@@ -431,17 +428,15 @@ app.get('/users/:id/purchases', (req: Request, res: Response) => {
     try {
         const id = req.params.id
 
-        ///VERIFICAR SE TA CERTO
+        const result = purchases.find((purchase) => {
+            return purchase.userId === id}
+            )
 
-        if (id !== undefined) {
-            // if(id !== purchases.userId )
-            // res.status(400)
-            throw new Error("Usuario não existe")
-        }
-        const result = purchases.filter((purchase) => {
-            return purchase.userId === id
-        })
-        res.status(200).send(result)
+        if (!result) {
+            res.status(404)
+            throw new Error("Usuário não existe")
+        }else{
+        res.status(200).send(result)}
 
     } catch (error: any) {
         console.log(error)
@@ -461,7 +456,7 @@ app.get('/users/:id/purchases', (req: Request, res: Response) => {
 // status 200
 // "User apagado com sucesso"
 
-//exercício 2.3
+//EXERCÍCIO 2.3
 
 // Delete User by id
 // validar que o usuário existe
@@ -484,17 +479,18 @@ app.get('/users/:id/purchases', (req: Request, res: Response) => {
 app.delete('/users/:id', (req: Request, res: Response) => {
     try {
 
-        //FAZER A LÓGICA
+      
 
         const id = req.params.id
 
+        //findIndex usado para objetos
         const userIndex = users.findIndex((user) => {
             return user.id === id
         })
         console.log("index:", userIndex)
 
         if (userIndex >= 0) {
-            users.splice(userIndex, 1)
+            users.splice(userIndex, 1) //1 ta indicando q vai excluir 1
             res.status(200).send("Usuário apagado com sucesso")
         } else {
             res.status(404).send("usuário não encontrado")
@@ -538,7 +534,7 @@ app.delete('/users/:id', (req: Request, res: Response) => {
 //EXERCICIO 2.4
 
 // Delete Product by id
-// validar que o produto existe         ====  FAZER A LÓGICA====
+// validar que o produto existe  
 
 app.delete('/products/:id', (req: Request, res: Response) => {
     try {
@@ -550,7 +546,7 @@ app.delete('/products/:id', (req: Request, res: Response) => {
         console.log("index:", productIndex)
 
         if (productIndex >= 0) {
-            users.splice(productIndex, 1)
+            products.splice(productIndex, 1)
             res.status(200).send("Produto apagado com sucesso")
         } else {
             res.status(404).send("Produto não encontrado")
@@ -608,32 +604,55 @@ app.delete('/products/:id', (req: Request, res: Response) => {
 app.put('/users/:id', (req: Request, res: Response) => {
     try {
 
-        const { id, email, password } = req.body as TUser | undefined
+        const { id, email, password } = req.body
         const response = req.params.id
 
 
+        if(id !== undefined){
+            if (typeof id !== "string"){
+                res.status(400)
+                throw new Error("'id' deve ser uma string")
+            }
+        }
+        
+        if(email !== undefined){
+            if (typeof email !== "string"){
+                res.status(400)
+                throw new Error("'email' deve ser uma string")
+            }
+        }
+        if(password !== undefined){
+            if (typeof password !== "string"){
+                res.status(400)
+                throw new Error("'password' deve ser uma string")
+            }
+        }
         
         const result = users.find((user) => {
-            return user.id === response
+            return user.id === response ///response é o id 
         })
+
+      
         //if para não apagar os que não foram atualizados
         if (result) {
             result.id = req.body.id || result.id
             result.email = req.body.email || result.email
             result.password = req.body.password || result.password
             res.status(200).send("Cadastro atualizado com sucesso")
+        
         } else {
-            res.status(404).send("Não encontrado")
+            res.status(404)
+            throw new Error ("Usuário não existe")
         }
-    } catch (error) {
 
+    } catch (error: any) {
+        console.log(error)
+        if (res.statusCode === 200) {
+            res.status(500)
+        }
+        res.send(error.message)
     }
 })
-
-
-
-
-
 
 
 //================================================================================================
@@ -649,12 +668,65 @@ app.put('/users/:id', (req: Request, res: Response) => {
 // status 200
 // "Produto atualizado com sucesso"
 
-app.put('/products/:id', (req: Request, res: Response) => {
+
     //para que usuario consiga editar id(só parao dev), nome, tipo....
 
-    //desestruturado
-    const { id, name, price, category } = req.body as TProduct | undefined
+    // desestruturado
+//     const { id, name, price, category } = req.body as TProduct | undefined
+//     const response = req.params.id
+//     const result = products.find((product) => {
+//         return product.id === response
+//     })
+//     //if para não apagar os que não foram atualizados
+//     if (result) {
+//         result.id = req.body.id || result.id
+//         result.name = req.body.name || result.name
+//         result.price = req.body.price || result.price
+//         result.category = req.body.category || result.category
+//         res.status(200).send("Cadastro atualizado com sucesso")
+//     } else {
+//         res.status(404).send("Não encontrado")
+//     }
+
+// })
+
+//EXERCICIO 2.5
+// Edit Product by id
+// validar que o produto existe
+// validar o body
+app.put('/products/:id', (req: Request, res: Response) => {
+try {
+    const { id, name, price, category } = req.body
     const response = req.params.id
+    
+    if(id !== undefined){
+        if (typeof id !== "string"){
+            res.status(400)
+            throw new Error("'id' deve ser uma string")
+        }
+    }
+    
+    if(name !== undefined){
+        if (typeof name !== "string"){
+            res.status(400)
+            throw new Error("'email' deve ser uma string")
+        }
+    }
+    if(price !== undefined){
+        if (typeof price !== "number"){
+            res.status(400)
+            throw new Error("'password' deve ser uma number")
+        }
+    }
+
+    if(category !== undefined){
+        if (typeof category !== "string"){
+            res.status(400)
+            throw new Error("'password' deve ser uma string")
+        }
+    }
+
+    
     const result = products.find((product) => {
         return product.id === response
     })
@@ -666,7 +738,14 @@ app.put('/products/:id', (req: Request, res: Response) => {
         result.category = req.body.category || result.category
         res.status(200).send("Cadastro atualizado com sucesso")
     } else {
-        res.status(404).send("Não encontrado")
+        res.status(404).send("Produto não encontrado")
     }
 
+} catch (error) {
+    console.log(error)
+    if (res.statusCode === 200) {
+        res.status(500)
+    }
+    res.send(error.message)
+}
 })
