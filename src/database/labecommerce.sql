@@ -2,15 +2,18 @@
 
 CREATE TABLE users (
         id TEXT PRIMARY KEY UNIQUE NOT NULL,
+        name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        created_at TEXT  DEFAULT (DATETIME()) NOT NULL
     );
 
 CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
     price REAL NOT NULL,
-    category TEXT NOT NULL
+    description TEXT NOT NULL
+   
 );
 
 
@@ -20,21 +23,23 @@ PRAGMA table_info ( 'products');
 
 
 
-INSERT INTO users (id, email, password)
+INSERT INTO users (id, name, email, password)
 VALUES 
-('a001','mickey@labenu.com','111111'), 
-('a002','minnie@lab.com.br','222222'), 
-('a003','fran@casa.com.br','333333');
+('a001','Mickey','mickey@labenu.com','111111'), 
+('a002','Minnie', 'minnie@lab.com.br','222222'), 
+('a003','Pluto','fran@casa.com.br','333333');
 
-INSERT INTO products (id, name, price, category)
+INSERT INTO products (id, name, price, description)
 VALUES
 ('1212', 'boneca', 50, 'toy' ),
 ('1200', 'oculos', 100, 'acessories'),
-('1400', 'sandalia', 80, 'shoes' ),
-('1500', 'carrinho', 70, 'toy' ),
+('1400', 'sandalia', 80, 'shoes'),
+('1500', 'carrinho', 70, 'toy'),
 ('1600', 'bone', 90, 'acessories' );
 
 DROP TABLE products;
+
+DROP TABLE users;
 
 --QUERY AULA APROFUNDAMENTO SQL
 
