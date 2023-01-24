@@ -1,18 +1,22 @@
 import { TUser } from "./types"
 import { TProduct } from "./types"
 import { TPurchase } from "./types"
-import { CATEGORY } from "./types"
+
 
 export const users: TUser [] =[
     {
         id:"10",
+        name: "Mickey",
         email:"mickey@labenu.com",
         password:"111111",
+        created_at: "DATETIME"
     },
     {
         id:"11",
+        name:"Minnie",
         email: "minnie@labe.com",
         password:"22222",
+        created_at:""
     }
 ]
 
@@ -21,14 +25,15 @@ export const products:TProduct [] = [
         id:"1212",
         name:"boneca",
         price:50,
-        category:CATEGORY.TOY,
+        description:"brinquedo"
+        
     },
 
     {
         id:"1200",
         name:"oculos",
         price:60,
-        category:CATEGORY.ACESSORIES, 
+        description:"acessorios" 
     }
 ]
 
@@ -49,12 +54,14 @@ export const purchases: TPurchase []=[
 ]
 
 
-export const  createUser = (id: string, email: string, password:string): string =>{
+export const  createUser = (id: string,name:string, email: string, password:string, created_at:string): string =>{
 
     const newUser: TUser = {
         id:id,
+        name:name,
         email: email,
-        password: password
+        password: password,
+        created_at:created_at
     }
     users.push(newUser)
     return "Cadastro feito com sucesso"
@@ -64,12 +71,12 @@ export const getAllUsers = (): TUser[] =>{
     return users
 }
 
-export const createProduct= (id:string, name: string, price: number, category: string): string =>{
+export const createProduct= (id:string, name: string, price: number, description: string): string =>{
     const newProduct = {
         id: id,
         name: name,
         price: price,
-        category: category
+        description: description
     }
     products.push(newProduct)
     return "Produto criado com sucesso"

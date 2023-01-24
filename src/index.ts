@@ -3,6 +3,7 @@ import { createUser, getAllProducts, getProductById } from "./database";
 import cors from 'cors'
 import express, { request, Request, response, Response } from "express";
 import { TProduct, TPurchase, TUser } from "./types";
+import { db } from "./database/knex";
 
 // console.log("Usuários cadastrados")
 // console.table(users)
@@ -13,7 +14,7 @@ import { TProduct, TPurchase, TUser } from "./types";
 // console.log("Compras")
 // console.table(purchases)
 
-console.table(createUser('Fran', 'fran@hjhjhj', '11111'))
+// console.table(createUser('Fran', 'fran@hjhjhj', '11111'))
 console.log(getAllUsers())
 console.log(getAllProducts())
 console.log(getProductById('03'))
@@ -49,21 +50,27 @@ app.get('/ping', (req: Request, res: Response) => {
 // })
 
 //não precisa de validação,basta refatorar para o uso do try/catch EXERCICIO 1.1
-app.get('/users', (req: Request, res: Response) => {
+
+//KNEX 1.1
+app.get('/users', async (req: Request, res: Response) => {
     try {
-        res.status(200).send(users)
+        const result = await db.raw(`SELECT * FROM users`)
+        res.status(200).send(result)
 
 
     } catch (error: any) {
         console.log(error)
 
-        if (res.statusCode === 200) {
+        if (req.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
-    }
 
-
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+}
 })
 //==============================================================================================
 //add createusers
@@ -89,14 +96,21 @@ app.get('/users', (req: Request, res: Response) => {
 // não deve ser possível criar mais de uma conta com a mesma id
 // não deve ser possível criar mais de uma conta com o mesmo e-mail
 
-app.post('/users', (req: Request, res: Response) => {
+//KNEX 2.1
+
+app.post('/users', async (req: Request, res: Response) => {
 
     try {
-        const { id, email, password } = req.body
+        const { id, name,email, password, created_at  } = req.body
 
         if (typeof id !== "string") {
             res.status(400)
             throw new Error("'id' deve ser uma string ")
+        }
+        
+        if (typeof name !== "string") {
+            res.status(400)
+            throw new Error("'name' deve ser uma string ")
         }
         if (typeof email !== "string") {
             res.status(400)
@@ -107,16 +121,21 @@ app.post('/users', (req: Request, res: Response) => {
             throw new Error("'password' deve ser uma string ")
         }
 
-        const newUser = { id, email, password }
+        const newUser = { id,name, email, password,created_at }
 
-        const user = users.find((user) => user.id === id)
-        const userEmail = users.find((user) => user.email === email)
+        // const user = users.find((user) => user.id === id)
+        // const userEmail = users.find((user) => user.email === email)
 
-        if (user) {
+        await db.raw(`
+	        INSERT INTO users (id, name, email, password)
+	        VALUES ("${id}", "${name}", ${email}, "${password}, "${ created_at});
+        `) // colocamos as expressões entre ${}
+
+        if (!id) {
             res.status(400)
             throw new Error("Id já existe")
         }
-        if (userEmail) {
+        if (!email) {
             res.status(400)
             throw new Error("Email já existe")
         }
@@ -151,8 +170,12 @@ app.post('/users', (req: Request, res: Response) => {
 
 //não precisa de validação,basta refatorar para o uso do try/catch EXERCICIO 1.2
 
-app.get('/products', (req: Request, res: Response) => {
+//KNEX 1.2
+
+app.get('/products', async (req: Request, res: Response) => {
     try {
+       
+
         res.status(200).send(products)
 
     } catch (error: any) {
@@ -161,7 +184,12 @@ app.get('/products', (req: Request, res: Response) => {
         if (res.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+        if (error instanceof Error) {
+            res.send(error.message)
+
+        }else{
+            res.send(error.message)
+        }
     }
 
 })
@@ -188,7 +216,7 @@ app.get('/products', (req: Request, res: Response) => {
 app.post('/products', (req: Request, res: Response) => {
     try {
 
-        const { id, name, price, category } = req.body
+        const { id, name, price, description } = req.body
 
         if (typeof id !== "string") {
             res.status(400)
@@ -202,12 +230,12 @@ app.post('/products', (req: Request, res: Response) => {
             res.status(400)
             throw new Error("'Price' deve ser um number")
         }
-        if (typeof category !== "string") {
+        if (typeof description !== "string") {
             res.status(400)
-            throw new Error("'Category' deve ser uma string")
+            throw new Error("'description' deve ser uma string")
         }
 
-        const newProduct = { id, name, price, category }
+        const newProduct = { id, name, price, description }
 
         const product = products.find((product) => product.id === id)
 
@@ -231,7 +259,7 @@ app.post('/products', (req: Request, res: Response) => {
 })
 
 
-//procurar produtos por nome
+//Search Product by name
 
 // app.get('/products/search', (req: Request, res: Response) => {
 //     const q = req.query.q as string
@@ -245,32 +273,49 @@ app.post('/products', (req: Request, res: Response) => {
 //refatorado para o uso do try/catch EXERCICIO 1.3
 //query params deve possuir pelo menos um caractere
 
-app.get('/products/search', (req: Request, res: Response) => {
+//KNEX 1.3
+
+app.get('/products/search', async (req: Request, res: Response) => {
     try {
-        const q = req.query.q
+        // const q = req.query.q
+        const name = req.query.name
 
-        const result = products.filter((product) => {
-            return product.name === q
-        })
+        // const result = products.filter((product) => {
+        //     return product.name === q
+        // })
 
-        if (q !== undefined) {
-            if (q.length > 1) {
+        const [result] = await db.raw(`
+            SELECT * FROM products
+            WHERE name LIKE "%${name}%";       
+             `)
+
+             if(!result){
+                res.status(404)
+                throw new Error("Produto inexistente")
+             }
+        if (name !== undefined) {
+            if (name.length > 1) {
                 res.status(200).send(result)
 
             } else {
                 res.status(400)
-                throw new Error("O 'q' deve termais de 1 caracter")
+                throw new Error("O 'q' deve ter mais de 1 caracter")
             }
 
         }
 
-
     } catch (error: any) {
         console.log(error)
+
         if (res.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+        if (error instanceof Error) {
+            res.send(error.message)
+
+        }else{
+            res.send(error.message)
+        }
     }
 })
 
@@ -739,7 +784,7 @@ try {
         result.id = req.body.id || result.id
         result.name = req.body.name || result.name
         result.price = req.body.price || result.price
-        result.category = req.body.category || result.category
+        result.description = req.body.category || result.description
         res.status(200).send("Cadastro atualizado com sucesso")
     } else {
         res.status(404).send("Produto não encontrado")
