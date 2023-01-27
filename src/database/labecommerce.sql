@@ -7,6 +7,7 @@ CREATE TABLE users (
         password TEXT NOT NULL,
         created_at TEXT  DEFAULT (DATETIME()) NOT NULL
     );
+    
 
 CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
@@ -147,7 +148,7 @@ ORDER BY price ASC;
 CREATE TABLE purchases (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     buyer_id TEXT NOT NULL,
-    total_price REAL UNIQUE NOT NULL,
+    total_price REAL NOT NULL,
     create_at TEXT  DEFAULT (DATETIME()) NOT NULL,
     paid INTEGER DEFAULT (0) NOT NULL,
     FOREIGN KEY(buyer_id) REFERENCES users (id)
