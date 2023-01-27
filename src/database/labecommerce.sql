@@ -12,9 +12,14 @@ CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
     price REAL NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    image_url TEXT NOT NULL
    
 );
+
+DROP TABLE users;
+
+DROP TABLE products;
 
 
 PRAGMA table_info ('users');
@@ -29,17 +34,15 @@ VALUES
 ('a002','Minnie', 'minnie@lab.com.br','222222'), 
 ('a003','Pluto','fran@casa.com.br','333333');
 
-INSERT INTO products (id, name, price, description)
+INSERT INTO products (id, name, price, description, image_url)
 VALUES
-('1212', 'boneca', 50, 'toy' ),
-('1200', 'oculos', 100, 'acessories'),
-('1400', 'sandalia', 80, 'shoes'),
-('1500', 'carrinho', 70, 'toy'),
-('1600', 'bone', 90, 'acessories' );
+('p001', 'Boneca', 50, 'Brinquedos','http://lorempixel.com.br/500/400/?1' ),
+('p002', 'Óculos', 100, 'Acessories', 'http://lorempixel.com.br/500/400/?1'),
+('p003', 'Sandalia', 80, 'Calçado', 'http://lorempixel.com.br/500/400/?1'),
+('p004', 'carrinho', 70, 'Brinquedos', 'http://lorempixel.com.br/500/400/?1'),
+('p005', 'Boné', 90, 'Acessórios', 'http://lorempixel.com.br/500/400/?1' );
 
-DROP TABLE products;
 
-DROP TABLE users;
 
 --QUERY AULA APROFUNDAMENTO SQL
 
@@ -143,26 +146,28 @@ ORDER BY price ASC;
 
 CREATE TABLE purchases (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
-    total_price REAL UNIQUE NOT NULL,
-    paid INTEGER NOT NULL,
-    delivered_at TEXT,
     buyer_id TEXT NOT NULL,
+    total_price REAL UNIQUE NOT NULL,
+    create_at TEXT  DEFAULT (DATETIME()) NOT NULL,
+    paid INTEGER DEFAULT (0) NOT NULL,
     FOREIGN KEY(buyer_id) REFERENCES users (id)
 );
 
 PRAGMA table_info('purchases');
 
+DROP TABLE purchases;
+
 --A coluna paid será utilizada para guardar uma lógica booleana. O SQLite recomenda o uso do número 0 para false e 1 para true.
 --Os pedidos começam com paid valendo 0 e quando o pagamento for finalizado, se atualiza para 1.
 
-INSERT INTO purchases (id, total_price, paid, buyer_id)
+INSERT INTO purchases (id, buyer_id, total_price )
 VALUES
-('p0001', 600, 0,'a001'),
-('p0002', 300, 0,'a001'),
-('p0003', 200, 0,'a002'),
-('p0004', 100, 0,'a002'),
-('p0005', 250, 0,'a003'),
-('p0006', 400, 0,'a003');
+('c0001', 'a001', 600),
+('c0002','a001', 300),
+('c0003','a002',200),
+('c0004','a002',100),
+('c0005','a003', 250),
+('c0006','a003', 400);
 
 SELECT * FROM purchases;
 
@@ -196,11 +201,10 @@ DROP TABLE purchases_products;
 
 INSERT INTO purchases_products (  purchase_id,product_id,quantity)
 VALUES
-('p0001','1212',12),
-('p0002','1200',3),
-('p0003','1200',2);
+('c0001','p001',12),
+('c0002','p002',3),
+('c0003','p002',2);
 
-SELECT * FROM purchases_products;
 
 --exercício 2.2 Consulta com junção INNER JOIN
 --Mostre em uma query todas as colunas das tabelas relacionadas (purchases_products, purchases e products).
