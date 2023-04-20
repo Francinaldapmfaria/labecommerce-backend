@@ -1,8 +1,7 @@
 # labecommerce-backend
 
 # Projeto Labecommerce
-
-Projeto  onde é aplicado toda a base de criação de uma API vinculada a um banco de dados real.
+Projeto Labecommerce é uma API criada para administrar compras de um e-commerce, de maneira que foi aplicado toda a base de criação de uma API vinculada a um banco de dados real.
 
 # Conteúdos
 
